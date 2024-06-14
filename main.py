@@ -1,5 +1,4 @@
-from fastapi import FastAPI
-from routes.activities.controller import routes_activities
+import uvicorn
 
-app = FastAPI()
-app.include_router(routes_activities, prefix="/activities")
+if __name__ == "__main__":
+    uvicorn.run("app.routes.api:app", host="localhost", port=8081, reload=True)
