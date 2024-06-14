@@ -1,16 +1,12 @@
 from pymongo import MongoClient, errors
-from datetime import datetime
-import yaml
+from decouple import config
 
-with open('secrets/mongodb_pass.yaml', 'r') as file:
-    yaml_content = yaml.safe_load(file)
-
-MONGODB_SERVICE= yaml_content['MONGODB_SERVICE']
-MONGODB_URI= yaml_content['MONGODB_URI']
-MONGODB_DBNAME= yaml_content['MONGODB_DBNAME']
-MONGODB_USERNAME= yaml_content['MONGODB_USERNAME']
-MONGODB_PASSWORD = yaml_content['MONGODB_PASSWORD']
-MONGODB_COLLECTION = yaml_content['MONGODB_COLLECTION']
+MONGODB_SERVICE = config("MONGODB_SERVICE")
+MONGODB_URI = config("MONGODB_URI")
+MONGODB_DBNAME = config("MONGODB_DBNAME")
+MONGODB_USERNAME = config("MONGODB_USERNAME")
+MONGODB_PASSWORD = config("MONGODB_PASSWORD")
+MONGODB_COLLECTION = config("MONGODB_COLLECTION")
 
 class MongoConnector:
     def __init__(self, database_name=MONGODB_DBNAME, collection_name=MONGODB_COLLECTION):

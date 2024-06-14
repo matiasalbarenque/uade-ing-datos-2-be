@@ -1,15 +1,11 @@
-import os
 from neo4j import GraphDatabase
-import yaml
+from decouple import config
 
-with open('secrets/neo4j_pass.yaml', 'r') as file:
-    yaml_content = yaml.safe_load(file)
-
-NEO4J_URI= yaml_content['NEO4J_URI']
-NEO4J_USERNAME= yaml_content['NEO4J_USERNAME']
-NEO4J_PASSWORD = yaml_content['NEO4J_PASSWORD']
-AURA_INSTANCEID= yaml_content['AURA_INSTANCEID']
-AURA_INSTANCENAME= yaml_content['AURA_INSTANCENAME']
+NEO4J_URI = config("NEO4J_URI")
+NEO4J_USERNAME = config("NEO4J_USERNAME")
+NEO4J_PASSWORD = config("NEO4J_PASSWORD")
+AURA_INSTANCEID = config("AURA_INSTANCEID")
+AURA_INSTANCENAME = config("AURA_INSTANCENAME")
 
 class Neo4jConnector:
     def __init__(self):
@@ -73,20 +69,24 @@ class Neo4jConnector:
         query += ", ".join([f"{key}: ${key}" for key in properties.keys()])
         query += "})"
         tx.run(query, **properties)
+
     @staticmethod
     def _get_node(tx, label, key, value):
         query = f"MATCH (n:{label} {{{key}: ${key}}}) RETURN n"
         result = tx.run(query, {key: value})
         return result.single()
+
     @staticmethod
     def _update_node(tx, label, key, value, properties):
         query = f"MATCH (n:{label} {{{key}: ${key}}}) SET "
         query += ", ".join([f"n.{prop_key} = ${prop_key}" for prop_key in properties.keys()])
         tx.run(query, {key: value, **properties})
+
     @staticmethod
     def _delete_node(tx, label, key, value):
         query = f"MATCH (n:{label} {{{key}: ${key}}}) DETACH DELETE n"
         tx.run(query, {key: value})
+
     @staticmethod
     def _create_relationship(tx, start_node_label, start_node_key, start_node_value, 
                              relationship_type, end_node_label, end_node_key, end_node_value, 
@@ -108,6 +108,7 @@ class Neo4jConnector:
         query = (f"MATCH (a:{start_node_label} {{{start_node_key}: $start_value}})-[r:{relationship_type}]-(b:{end_node_label} {{{end_node_key}: $end_value}}) "
                  f"DELETE r")
         tx.run(query, {"start_value": start_node_value, "end_value": end_node_value})
+
     @staticmethod
     def _get_nodes_with_property_and_relationship(tx, node_label, property_key, property_value, relationship_type, related_node_label, related_node_property_key, related_node_property_value):
         query = (f"MATCH (n:{node_label})-[r:{relationship_type}]-(m:{related_node_label} {{{related_node_property_key}: $related_node_property_value}}) "                 
