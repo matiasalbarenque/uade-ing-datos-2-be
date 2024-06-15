@@ -6,6 +6,9 @@
 pip install uvicorn
 pip install fastapi
 pip install bcrypt
+pip install pymongo
+pip install neo4j
+
 ```
 
 ## Para conectar a base de datos
