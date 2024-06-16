@@ -10,7 +10,10 @@ def getUsersService():
     return json_response(data)
 
 def getUserInfoService(email: str):
-    query = "select firstname, lastname, email, roles_id from users where email = %s"
-    params = (email,)
-    data = conn.fetch(query, params)
-    return json_response(data)
+    try:
+        query = "select firstname, lastname, email, roles_id, nickname from users where email = %s"
+        params = (email,)
+        data = conn.fetch(query, params)
+        return json_response(data[0])
+    except Exception as error:
+            raise Exception(error)
