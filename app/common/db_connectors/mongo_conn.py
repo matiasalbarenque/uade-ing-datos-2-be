@@ -1,5 +1,6 @@
 from pymongo import MongoClient, errors
 from decouple import config
+from bson import ObjectId
 
 MONGODB_SERVICE = config("MONGODB_SERVICE")
 MONGODB_URI = config("MONGODB_URI")
@@ -10,7 +11,8 @@ MONGODB_COLLECTION = config("MONGODB_COLLECTION")
 
 class MongoConnector:
     def __init__(self, database_name=MONGODB_DBNAME, collection_name=MONGODB_COLLECTION):
-        self.client = MongoClient(f"{MONGODB_SERVICE}{MONGODB_USERNAME}:{MONGODB_PASSWORD}{MONGODB_URI}")
+        self.client = MongoClient('localhost', 27017)
+        # self.client = MongoClient(f"{MONGODB_SERVICE}{MONGODB_USERNAME}:{MONGODB_PASSWORD}{MONGODB_URI}")
         self.db = self.client[database_name]
         self.collection = self.db[collection_name]
     def check_connection(self):
@@ -28,6 +30,13 @@ class MongoConnector:
 
     def find_document(self, query):
         return self.collection.find_one(query)
+    
+    def find_documents(self, query):
+        cursor = self.collection.find(query)
+        documents = list(cursor)
+        for doc in documents:
+            doc['_id'] = str(doc['_id'])
+        return documents
 
     def update_document(self, query, new_values):
         update_result = self.collection.update_one(query, new_values)

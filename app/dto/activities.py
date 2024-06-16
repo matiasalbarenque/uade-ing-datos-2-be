@@ -13,13 +13,5 @@ class ActivitiesDto(BaseModel):
     task_id: str
     user_id: int
     comment: str
-    likes: list
+    likes: list = list()
     date: str = Field(default_factory=generate_date)
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "project_id": "",
-                "task_id": ""
-            }
-        }
