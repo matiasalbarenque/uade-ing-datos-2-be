@@ -30,7 +30,7 @@ async def addProject(req: ProjectDto):
         raise HTTPException(status_code=500, detail=result["error"])
     return result
 
-@router.post("/", tags=[entity])
+@router.post("/assign", tags=[entity])
 async def addProjectTask(req: AssignDto):
     result = await addProjectTaskService(req)
     if "error" in result:
