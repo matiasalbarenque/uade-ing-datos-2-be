@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from typing import Annotated
 from app.common.auth.auth_bearer import JWTBearer
 from app.common.auth.auth_utils import get_current_user
@@ -13,4 +13,7 @@ async def getUsers():
 
 @router.get("/user-info", dependencies=[Depends(JWTBearer())], tags=[entity])
 async def getUserInfo(user: Annotated[dict, Depends(get_current_user)]):
-    return getUserInfoService(user['email'])
+    try:
+        return getUserInfoService(user['email'])
+    except:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
