@@ -9,9 +9,12 @@ AURA_INSTANCENAME = config("AURA_INSTANCENAME")
 
 class Neo4jConnector:
     def __init__(self):
-        uri = NEO4J_URI
-        user=NEO4J_USERNAME
-        password=NEO4J_PASSWORD
+        uri = "bolt://localhost:7687" 
+        user="neo4j"
+        password="uademerypoc"
+        #uri = NEO4J_URI
+        #user=NEO4J_USERNAME
+        #password=NEO4J_PASSWORD
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
         
     def try_connection(self):
