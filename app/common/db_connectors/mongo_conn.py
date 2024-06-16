@@ -46,9 +46,6 @@ class MongoConnector:
         delete_result = self.collection.delete_one(query)
         return delete_result.deleted_count
 
-    """def add_like(self, query, user_id):
-        update_result = self.collection.update_one(query, {"$addToSet": {"likes": user_id}})
-        return update_result.matched_count, update_result.modified_count"""
     def add_like(self, activity_id, user_id):
         try:
             query = {"_id": ObjectId(activity_id)}
