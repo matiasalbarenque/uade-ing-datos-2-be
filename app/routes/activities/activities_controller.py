@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Path
 # from app.common.auth.auth_bearer import JWTBearer
 from typing import Optional, Dict
 from app.dto.activities import ActivitiesDto
-from app.routes.activities.activities_service import getActivitiesService, addActivityService
+from app.routes.activities.activities_service import getActivitiesService, addActivityService, addLikeService
 
 
 router = APIRouter()
@@ -24,6 +24,13 @@ async def getActivities(user_id: Optional[int] = Query(None), project_id: Option
 @router.post("/")
 async def addActivity(req: ActivitiesDto):
     result = await addActivityService(req)
+    if "error" in result:
+        raise HTTPException(status_code=500, detail=result["error"])
+    return result
+
+@router.post("/{activity_id}/like")
+async def addLike(activity_id: str, user_id: str):
+    result = await addLikeService(activity_id, user_id)
     if "error" in result:
         raise HTTPException(status_code=500, detail=result["error"])
     return result
