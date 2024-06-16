@@ -38,6 +38,11 @@ class Neo4jConnector:
         with self.driver.session() as session:
             result = session.read_transaction(self._get_node, label, key, value)
             return result
+    
+    def get_all_nodes(self, label):
+        with self.driver.session() as session:
+            result = session.read_transaction(self._get_all_node, label)
+            return result
 
     def update_node(self, label, key, value, properties):
         with self.driver.session() as session:
@@ -78,6 +83,16 @@ class Neo4jConnector:
         query = f"MATCH (n:{label} {{{key}: ${key}}}) RETURN n"
         result = tx.run(query, {key: value})
         return result.single()
+    
+    @staticmethod
+    def _get_all_node(tx, label):
+        query = f"MATCH (n:{label}) RETURN n"
+        result = tx.run(query)
+        values = []
+        for record in result:
+            values.append(record.values())
+        return values
+
 
     @staticmethod
     def _update_node(tx, label, key, value, properties):
