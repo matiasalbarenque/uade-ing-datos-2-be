@@ -6,6 +6,12 @@
 pip install uvicorn
 pip install fastapi
 pip install bcrypt
+pip install pymongo
+pip install neo4j
+pip install python-decouple
+pip install pyjwt
+pip install mysql-connector-python
+
 ```
 
 ## Para conectar a base de datos
