@@ -5,6 +5,7 @@ from .users.users_controller import router as users_routes
 from .activities.activities_controller import router as activities_routes
 from .projects.projects_controller import router as projects_routes
 from .tasks.tasks_controller import router as tasks_routes
+from .profiles.profiles_controller import router as profiles_routes
 
 app = FastAPI()
 app.add_middleware(
@@ -19,3 +20,4 @@ app.include_router(users_routes, prefix="/users")
 app.include_router(activities_routes, prefix="/activities")
 app.include_router(projects_routes, prefix="/projects")
 app.include_router(tasks_routes, prefix="/tasks")
+app.include_router(profiles_routes, prefix="/profiles")
