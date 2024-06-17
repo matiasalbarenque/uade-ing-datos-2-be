@@ -9,7 +9,7 @@ def generate_uuid():
 class ProfileDto(BaseModel):
     user_id: str
     user_name: str
-    decription: str
+    description: str
     availability: int
     image: str
     birth_date: str 
