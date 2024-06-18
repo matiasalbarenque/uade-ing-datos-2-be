@@ -3,10 +3,17 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Body
 from app.dto.tasks import TasksDto
 from app.dto.assignation import AssignDto
 from typing import Optional, Dict
-from app.routes.tasks.tasks_service import addTaskService, getTasksService, updateTaskService, addTaskAssignationService, getTaskResponsibleService, getTaskCandidatesService
+from app.routes.tasks.tasks_service import findTaskService, addTaskService, getTasksService, updateTaskService, addTaskAssignationService, getTaskResponsibleService, getTaskCandidatesService
 
 router = APIRouter()
 entity = "tasks"
+
+@router.get("/{task_id}", tags=[entity])
+async def findProfile(task_id: str):
+    result = await findTaskService(task_id)
+    if "error" in result:
+        raise HTTPException(status_code=500, detail=result["error"])
+    return result
 
 @router.get("/", tags=[entity])
 async def getTasks():

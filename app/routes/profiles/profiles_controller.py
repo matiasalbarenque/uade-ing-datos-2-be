@@ -4,10 +4,17 @@ from app.dto.assignation import AssignDto
 from app.dto.profiles import ProfileDto
 
 from typing import Optional, Dict
-from app.routes.profiles.profiles_service import addProfileService, getProfileService, updateProfileService, addProfileSkillService
+from app.routes.profiles.profiles_service import addProfileService, getProfileService, updateProfileService, addProfileSkillService, findProfileService
 
 router = APIRouter()
 entity = "profiles"
+
+@router.get("/{user_id}", tags=[entity])
+async def findProfile(user_id: str):
+    result = await findProfileService(user_id)
+    if "error" in result:
+        raise HTTPException(status_code=500, detail=result["error"])
+    return result
 
 @router.get("/", tags=[entity])
 async def getProfile():
@@ -17,7 +24,7 @@ async def getProfile():
     return result
         
 @router.put("/", tags=[entity])
-async def updateProject(req: ProfileDto):
+async def updateProfile(req: ProfileDto):
     result = await updateProfileService(req)
     if "error" in result:
         raise HTTPException(status_code=500, detail=result["error"])

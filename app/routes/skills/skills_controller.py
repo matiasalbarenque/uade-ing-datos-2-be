@@ -4,10 +4,17 @@ from app.dto.assignation import AssignDto
 from app.dto.skills import SkillDto
 
 from typing import Optional, Dict
-from app.routes.skills.skills_service import addSkillService, getSkillsService, updateSkillService
+from app.routes.skills.skills_service import findSkillService, addSkillService, getSkillsService, updateSkillService
 
 router = APIRouter()
 entity = "skills"
+
+@router.get("/{skill_id}", tags=[entity])
+async def findProfile(skill_id: str):
+    result = await findSkillService(skill_id)
+    if "error" in result:
+        raise HTTPException(status_code=500, detail=result["error"])
+    return result
 
 @router.get("/", tags=[entity])
 async def getSkills():
