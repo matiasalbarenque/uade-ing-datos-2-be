@@ -5,6 +5,15 @@ from app.common.db_connectors.neo4j_conn import Neo4jConnector
 from typing import Dict
 
 
+async def findProjectService(project_id):
+    try:
+        connector = Neo4jConnector()
+        response = connector.get_node('Project','project_id', project_id)
+        return response
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return {"error": "Internal server error, please try again later."}
+    
 async def getProjectService():
     try:
         connector = Neo4jConnector()

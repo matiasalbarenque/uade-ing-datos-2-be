@@ -4,6 +4,16 @@ from app.dto.assignation import AssignDto
 from app.common.db_connectors.neo4j_conn import Neo4jConnector
 from typing import Dict
 
+async def findTaskService(task_id):
+    try:
+        connector = Neo4jConnector()
+        response = connector.get_node('Task','task_id', task_id)
+        return response
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return {"error": "Internal server error, please try again later."}
+    
+
 async def getTasksService():
     try:
         connector = Neo4jConnector()
