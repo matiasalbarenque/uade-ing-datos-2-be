@@ -51,7 +51,7 @@ async def updateActivity(req: TasksDto):
     return result
 
 @router.post("/assign", tags=[entity])
-async def addProjectTask(req: AssignDto):
+async def addTaskAssignation(req: AssignDto):
     result = await addTaskAssignationService(req)
     if "error" in result:
         raise HTTPException(status_code=500, detail=result["error"])

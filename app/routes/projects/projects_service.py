@@ -33,6 +33,15 @@ async def getProjectTasksService(query_params: Dict):
     except Exception as e:
         print(f"Unexpected error: {e}")
         return {"error": "Internal server error, please try again later."}
+
+async def getCandidateTasksService():
+    try:
+        connector = Neo4jConnector()
+        response = connector.get_nodes_without_relationship('Task', 'PROJECT_HAS_TASK')
+        return response
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return {"error": "Internal server error, please try again later."}
     
 async def addProjectService(req: ProjectDto):
     try:

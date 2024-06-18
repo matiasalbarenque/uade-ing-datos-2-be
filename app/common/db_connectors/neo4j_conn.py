@@ -71,6 +71,10 @@ class Neo4jConnector:
                                               related_node_property_key, related_node_property_value)
             return result
     
+    def get_nodes_without_relationship(self, label, relationship_type):
+        with self.driver.session() as session:
+            result = session.read_transaction(self._get_nodes_without_relationship, label, relationship_type)
+            return result
     
     def get_nodes_with_relationship(self, node_label, relationship_type, related_node_label):
         with self.driver.session() as session:
@@ -109,10 +113,7 @@ class Neo4jConnector:
     def _get_all_node(tx, label):
         query = f"MATCH (n:{label}) RETURN n"
         result = tx.run(query)
-        values = []
-        for record in result:
-            values.append(record.values())
-        return values
+        return [record["n"] for record in result]
 
 
     @staticmethod
@@ -156,6 +157,11 @@ class Neo4jConnector:
         result = tx.run(query, {"property_value": property_value, "related_node_property_value": related_node_property_value})
         return [record["n"] for record in result]
     
+    @staticmethod
+    def _get_nodes_without_relationship(tx, label, relationship_type):
+        query = f"MATCH (n:{label}) WHERE NOT (n)-[:{relationship_type}]-() RETURN n"
+        result = tx.run(query)
+        return [record["n"] for record in result]
     
     @staticmethod
     def _get_nodes_with_relationship(tx, node_label, relationship_type, related_node_label):

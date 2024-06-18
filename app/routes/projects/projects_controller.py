@@ -4,7 +4,7 @@ from app.dto.assignation import AssignDto
 from app.dto.projects import ProjectDto
 
 from typing import Optional, Dict
-from app.routes.projects.projects_service import addProjectService, getProjectService, updateProjectService, addProjectTaskService, getProjectColabService, getProjectTasksService
+from app.routes.projects.projects_service import addProjectService, getProjectService, updateProjectService, addProjectTaskService, getProjectColabService, getProjectTasksService,getCandidateTasksService
 
 router = APIRouter()
 entity = "projects"
@@ -22,6 +22,13 @@ async def getProjectColaborators(project_id: str = Query(...)):
     query_params["project_id"] = project_id
     
     result = await getProjectColabService(query_params)
+    if "error" in result:
+        raise HTTPException(status_code=500, detail=result["error"])
+    return result
+
+@router.get("/candidatesTasks", tags=[entity])
+async def getTaskCandidates():    
+    result = await getCandidateTasksService()
     if "error" in result:
         raise HTTPException(status_code=500, detail=result["error"])
     return result

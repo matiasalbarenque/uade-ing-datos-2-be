@@ -61,8 +61,23 @@ async def addTaskAssignationService(req: AssignDto):
         start_node = params['start_node']
         end_node = params['end_node']
         relationship = 'TASK_ASSIGNED_TO'
-        connector.create_relationship('User', 'user_id', start_node, relationship, 'Task', 'task_id', end_node)
-        return {"assignation": f'User {start_node} -- {relationship} -- {end_node}'}
+        
+        # Create Relationship
+        connector.create_relationship('Task', 'task_id', start_node, relationship, 'User', 'user_id', end_node)
+        
+        # Retrieve the user's current availability and the task duration
+        user_node = connector.get_node('User', 'user_id', end_node)['n']
+        task_node = connector.get_node('Task', 'task_id', start_node)['n']
+        user_availability = user_node['availability']
+        task_duration = task_node['duration']
+        
+        # Calculate the new availability
+        new_availability = user_availability - task_duration
+        
+        # Update the user's availability
+        connector.update_node('User', 'user_id', end_node, {'availability': new_availability})
+        
+        return {"assignation": f'User {end_node} -- {relationship} -- {start_node}'}
     except Exception as e:
         print(f"Unexpected error: {e}")
         return {"error": "Internal server error, please try again later."}
